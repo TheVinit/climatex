@@ -45,7 +45,8 @@ HTML_TEMPLATE = """
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(circle at 20% 20%, #202a44 0%, #0f1226 60%, #070a16 100%);
+            color: #e3eafc;
             min-height: 100vh;
             padding: 20px;
         }
@@ -56,11 +57,11 @@ HTML_TEMPLATE = """
         }
         
         .header {
-            background: white;
+            background: #111832;
             border-radius: 10px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
             text-align: center;
         }
         
@@ -83,16 +84,17 @@ HTML_TEMPLATE = """
         }
         
         .card {
-            background: white;
+            background: #1a203c;
             border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.6);
             transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #2e3667;
         }
         
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 18px rgba(0,0,0,0.65);
         }
         
         .card-title {
@@ -183,13 +185,13 @@ HTML_TEMPLATE = """
         .metric {
             margin: 10px 0;
             padding: 10px;
-            background: white;
-            border-left: 4px solid #667eea;
+            background: #161f3f;
+            border-left: 4px solid #51a8ff;
             border-radius: 3px;
         }
         
         .metric-label {
-            color: #666;
+            color: #9ab6ee;
             font-size: 0.9em;
         }
         
@@ -210,12 +212,13 @@ HTML_TEMPLATE = """
         }
         
         .footer {
-            background: white;
+            background: #10152e;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            color: #666;
+            color: #9fb5e4;
             margin-top: 30px;
+            border: 1px solid #2a3564;
         }
         
         .tabs {
@@ -729,34 +732,51 @@ def forecast():
     """Get crop advisory for a district"""
     data = request.json
     district = data.get('district')
-    
+
     if not forecaster:
         return jsonify({'error': 'Model not loaded'}), 500
-    
-    # Dummy predictions (in production, use actual model)
-    import numpy as np
-    np.random.seed(hash(district) % 2**32)
-    
-    drought_score = np.random.uniform(0.3, 0.8)
-    flood_score = np.random.uniform(0.2, 0.7)
-    heat_wave_score = np.random.uniform(0.4, 0.9)
-    
-    # Generate advice
+
+    if data_df is None:
+        return jsonify({'error': 'Historical data not available'}), 500
+
+    district_data = data_df[data_df['district'] == district]
+    if district_data.empty:
+        return jsonify({'error': f'No data for district: {district}'}), 404
+
+    features_df = forecaster.prepare_features(district_data)
+    feature_cols = [c for c in features_df.columns if c not in ['district', 'date']]
+
+    if not feature_cols:
+        return jsonify({'error': 'No feature columns available for prediction'}), 500
+
+    latest_features = features_df[feature_cols].iloc[-1:].values
+
+    if not forecaster.models:
+        loaded = forecaster.load_model()
+        if not loaded:
+            return jsonify({'error': 'Model not trained. Run /api/v1/train first.'}), 500
+
+    predictions = forecaster.predict_hazards(latest_features)
+
+    drought_score = float(predictions['drought']['risk_score'][0])
+    flood_score = float(predictions['flood']['risk_score'][0])
+    heat_wave_score = float(predictions['heat_wave']['risk_score'][0])
+
     risks = []
-    if drought_score > 0.6:
+    if drought_score > DROUGHT_THRESHOLD:
         risks.append("High drought risk - Use drip irrigation, ensure water storage")
-    if flood_score > 0.5:
+    if flood_score > FLOOD_THRESHOLD:
         risks.append("High flood risk - Ensure proper drainage systems")
-    if heat_wave_score > 0.7:
+    if heat_wave_score > HEAT_WAVE_THRESHOLD:
         risks.append("High heat wave risk - Use shade nets, increase watering frequency")
-    
+
     advisory = " | ".join(risks) if risks else "✓ Favorable conditions - Standard farming practices recommended"
-    
+
     return jsonify({
         'district': district,
-        'drought_score': float(drought_score),
-        'flood_score': float(flood_score),
-        'heat_wave_score': float(heat_wave_score),
+        'drought_score': drought_score,
+        'flood_score': flood_score,
+        'heat_wave_score': heat_wave_score,
         'crop_advisory': advisory
     })
 
@@ -765,23 +785,38 @@ def insurance_trigger():
     """Check if PMFBY insurance should be triggered"""
     data = request.json
     district = data.get('district')
-    
+
     if not forecaster:
         return jsonify({'error': 'Model not loaded'}), 500
-    
-    import numpy as np
-    np.random.seed(hash(district) % 2**32)
-    
-    drought_score = np.random.uniform(0.3, 0.8)
-    flood_score = np.random.uniform(0.2, 0.7)
-    
+
+    if data_df is None:
+        return jsonify({'error': 'Historical data not available'}), 500
+
+    district_data = data_df[data_df['district'] == district]
+    if district_data.empty:
+        return jsonify({'error': f'No data for district: {district}'}), 404
+
+    features_df = forecaster.prepare_features(district_data)
+    feature_cols = [c for c in features_df.columns if c not in ['district', 'date']]
+    latest_features = features_df[feature_cols].iloc[-1:].values
+
+    if not forecaster.models:
+        loaded = forecaster.load_model()
+        if not loaded:
+            return jsonify({'error': 'Model not trained. Run /api/v1/train first.'}), 500
+
+    predictions = forecaster.predict_hazards(latest_features)
+
+    drought_score = float(predictions['drought']['risk_score'][0])
+    flood_score = float(predictions['flood']['risk_score'][0])
+
     trigger = (drought_score > DROUGHT_THRESHOLD) or (flood_score > FLOOD_THRESHOLD)
-    
+
     return jsonify({
         'district': district,
         'trigger': trigger,
-        'drought_score': float(drought_score),
-        'flood_score': float(flood_score)
+        'drought_score': drought_score,
+        'flood_score': flood_score
     })
 
 @app.route('/api/v1/credit-risk', methods=['POST'])
@@ -789,26 +824,40 @@ def credit_risk():
     """Assess credit risk for NABARD lending"""
     data = request.json
     district = data.get('district')
-    
+
     if not forecaster:
         return jsonify({'error': 'Model not loaded'}), 500
-    
-    import numpy as np
-    np.random.seed(hash(district) % 2**32)
-    
-    max_hazard_score = np.random.uniform(0.2, 0.9)
-    
-    if max_hazard_score > 0.75:
-        risk_level = 'HIGH'
-    elif max_hazard_score > 0.6:
-        risk_level = 'MEDIUM'
-    else:
-        risk_level = 'LOW'
-    
+
+    if data_df is None:
+        return jsonify({'error': 'Historical data not available'}), 500
+
+    district_data = data_df[data_df['district'] == district]
+    if district_data.empty:
+        return jsonify({'error': f'No data for district: {district}'}), 404
+
+    features_df = forecaster.prepare_features(district_data)
+    feature_cols = [c for c in features_df.columns if c not in ['district', 'date']]
+    latest_features = features_df[feature_cols].iloc[-1:].values
+
+    if not forecaster.models:
+        loaded = forecaster.load_model()
+        if not loaded:
+            return jsonify({'error': 'Model not trained. Run /api/v1/train first.'}), 500
+
+    predictions = forecaster.predict_hazards(latest_features)
+
+    max_risk = max(
+        float(predictions['drought']['risk_score'][0]),
+        float(predictions['flood']['risk_score'][0]),
+        float(predictions['heat_wave']['risk_score'][0])
+    )
+
+    risk_level = 'HIGH' if max_risk > 0.75 else 'MEDIUM' if max_risk > 0.6 else 'LOW'
+
     return jsonify({
         'district': district,
         'risk_level': risk_level,
-        'max_hazard_score': float(max_hazard_score)
+        'max_hazard_score': max_risk
     })
 
 
