@@ -1,0 +1,74 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "pip",
+            "args": ["install", "-r", "requirements.txt"],
+            "problemMatcher": ["$python"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Install Dev Dependencies",
+            "type": "shell",
+            "command": "pip",
+            "args": ["install", "-r", "requirements-dev.txt"],
+            "problemMatcher": ["$python"]
+        },
+        {
+            "label": "Fetch DiCRA Data",
+            "type": "shell",
+            "command": "python",
+            "args": ["main.py", "fetch"],
+            "problemMatcher": ["$python"],
+            "group": "build"
+        },
+        {
+            "label": "Train Models",
+            "type": "shell",
+            "command": "python",
+            "args": ["main.py", "train"],
+            "problemMatcher": ["$python"],
+            "group": "build"
+        },
+        {
+            "label": "Run API Server",
+            "type": "shell",
+            "command": "python",
+            "args": ["api.py"],
+            "problemMatcher": ["$python"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "isBackground": true
+        },
+        {
+            "label": "Run Full Pipeline",
+            "type": "shell",
+            "command": "python",
+            "args": ["main.py", "full"],
+            "problemMatcher": ["$python"],
+            "group": "test"
+        },
+        {
+            "label": "Lint Code",
+            "type": "shell",
+            "command": "flake8",
+            "args": ["*.py", "--max-line-length=120"],
+            "problemMatcher": ["$flake8"],
+            "group": "test"
+        },
+        {
+            "label": "Format Code",
+            "type": "shell",
+            "command": "black",
+            "args": ["*.py"],
+            "problemMatcher": ["$python"]
+        }
+    ]
+}

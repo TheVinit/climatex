@@ -1,0 +1,58 @@
+======================================================================
+KISANSURAKSHA - MODEL PERFORMANCE REPORT
+======================================================================
+
+SYSTEM OVERVIEW
+----------------------------------------------------------------------
+Generated: 2026-03-25 15:42:52
+Training Data: 1687488 records
+Districts Covered: 33
+Climate Parameters: 4
+
+MODEL PERFORMANCE - F1 SCORES
+----------------------------------------------------------------------
+
+DROUGHT:
+  F1 Score: 0.9997
+  Confusion Matrix: [[80672, 0], [2, 3701]]
+
+FLOOD:
+  F1 Score: 1.0000
+  Confusion Matrix: [[75965, 0], [0, 8410]]
+
+HEAT_WAVE:
+  F1 Score: 1.0000
+  Confusion Matrix: [[76000, 0], [0, 8375]]
+
+======================================================================
+USE CASES
+======================================================================
+1. CROP ADVISORY
+   - Real-time hazard forecasts for farmers
+   - Endpoints: /api/v1/forecast
+   - Returns: Drought, Flood, Heat Wave risk scores + advisory
+
+2. PMFBY INSURANCE TRIGGER
+   - Automatic insurance activation based on risk threshold
+   - Endpoints: /api/v1/insurance-trigger
+   - Drought Threshold: 0.7, Flood Threshold: 0.6
+
+3. NABARD CREDIT RISK
+   - District-level credit risk assessment
+   - Endpoints: /api/v1/credit-risk
+   - Risk Levels: HIGH (>0.7), MEDIUM (0.5-0.7), LOW (<0.5)
+
+======================================================================
+VALIDATION
+======================================================================
+Historical Drought Years: 2012, 2015, 2016, 2018
+Marathwada Region Focus: Aurangabad, Marathwada, Parbhani
+
+======================================================================
+DATA SOURCES
+======================================================================
+• DiCRA API (dicra.nabard.org)
+• IMD Gridded Rainfall Data (imdpune.gov.in)
+• Sentinel-2 NDVI (Google Earth Engine)
+• PMFBY Claims Data (pmfby.gov.in)
+
