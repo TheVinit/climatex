@@ -26,15 +26,15 @@ async function get(path: string) {
 
 export function checkHealth() { return get('/health'); }
 export function getDistricts() { return get('/api/v1/districts'); }
-export function getForecast(district: string) {
-  return post('/api/v1/forecast', { district });
+export function getForecast(district: string, year: number = 2030) {
+  return post('/api/v1/forecast', { district, year });
 }
-export function getInsuranceTrigger(district: string) {
-  return post('/api/v1/insurance-trigger', { district });
+export function getInsuranceTrigger(district: string, year: number = 2030) {
+  return post('/api/v1/insurance-trigger', { district, year });
 }
-export function getCreditRisk(district: string) {
-  return post('/api/v1/credit-risk', { district });
+export function getCreditRisk(district: string, year: number = 2030) {
+  return post('/api/v1/credit-risk', { district, year });
 }
-export function getForecastHorizon(district: string) {
-  return post('/api/v1/forecast-horizon', { district });
+export function getForecastHorizon(district: string, year: number = 2030) {
+  return post('/api/v1/forecast-horizon', { district, year });
 }

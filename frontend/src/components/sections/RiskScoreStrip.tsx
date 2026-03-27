@@ -11,48 +11,20 @@ interface RiskScoreStripProps {
 }
 
 function getLevelColors(level: RiskLevel, isActive: boolean) {
-  if (isActive) {
-    return {
-      text: 'text-green-600',
-      bg: 'bg-green-600',
-      border: 'border-green-600',
-      ring: 'ring-2 ring-green-600 shadow-md',
-      tagText: 'text-green-700',
-      tagBg: 'bg-green-50',
-      tagBorder: 'border-green-200'
-    };
-  }
-  
-  if (level === 'HIGH') {
-    return {
-      text: 'text-red-500',
-      bg: 'bg-red-500',
-      border: 'border-red-500',
-      ring: 'hover:border-red-300 border-gray-200 shadow-sm',
-      tagText: 'text-red-700',
-      tagBg: 'bg-red-50',
-      tagBorder: 'border-red-200'
-    };
-  }
-  if (level === 'MEDIUM') {
-    return {
-      text: 'text-yellow-500',
-      bg: 'bg-yellow-500',
-      border: 'border-yellow-500',
-      ring: 'hover:border-yellow-300 border-gray-200 shadow-sm',
-      tagText: 'text-yellow-700',
-      tagBg: 'bg-yellow-50',
-      tagBorder: 'border-yellow-200'
-    };
-  }
+  const base = {
+    text: level === 'HIGH' ? 'text-red-500' : level === 'MEDIUM' ? 'text-yellow-500' : 'text-green-500',
+    bg: level === 'HIGH' ? 'bg-red-500' : level === 'MEDIUM' ? 'bg-yellow-500' : 'bg-green-500',
+    border: level === 'HIGH' ? 'border-red-500' : level === 'MEDIUM' ? 'border-yellow-500' : 'border-green-500',
+    tagText: level === 'HIGH' ? 'text-red-700' : level === 'MEDIUM' ? 'text-yellow-700' : 'text-green-700',
+    tagBg: level === 'HIGH' ? 'bg-red-50' : level === 'MEDIUM' ? 'bg-yellow-50' : 'bg-green-50',
+    tagBorder: level === 'HIGH' ? 'border-red-200' : level === 'MEDIUM' ? 'border-yellow-200' : 'border-green-200'
+  };
+
   return {
-    text: 'text-green-500',
-    bg: 'bg-green-500',
-    border: 'border-green-500',
-    ring: 'hover:border-green-300 border-gray-200 shadow-sm',
-    tagText: 'text-green-700',
-    tagBg: 'bg-green-50',
-    tagBorder: 'border-green-200'
+    ...base,
+    ring: isActive 
+      ? `ring-4 ${base.border.replace('border-', 'ring-')} ring-opacity-30 shadow-xl border-2 ${base.border}` 
+      : 'hover:border-gray-300 border-gray-100 shadow-sm'
   };
 }
 

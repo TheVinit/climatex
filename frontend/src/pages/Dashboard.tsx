@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { Role, Hazard } from '@/lib/types';
 import { useRiskData } from '@/hooks/useRiskData';
@@ -20,13 +20,35 @@ export default function Dashboard() {
   const [year, setYear] = useState(2030);
   const [hazard, setHazard] = useState<Hazard>('drought');
 
-  const { data, isLive, isLoading } = useRiskData(district);
+  const { data, isLive, isLoading } = useRiskData(district, year);
 
   if (!role || !['farmer', 'nabard', 'insurer', 'supplier'].includes(role)) {
     return <Navigate to="/" replace />;
   }
 
   const validRole = role as Role;
+
+  // Frontend UI projection logic to mathematically simulate climate progression
+  // ONLY applies during "Demo Mode" (if isLive is false).
+  // If "Model Online", the backend already calculates these projections.
+  const projectedData = useMemo(() => {
+    if (!data) return data;
+    if (isLive) return data; // Backend already handled projection
+    
+    const yearDiff = year - 2030;
+    const clamp = (val: number) => Math.min(Math.max(Math.round(val), 0), 100);
+    
+    return {
+      ...data,
+      drought: clamp(data.drought + (yearDiff * 1.5)),
+      flood: clamp(data.flood + (yearDiff * 0.8)),
+      heat: clamp(data.heat + (yearDiff * 2.1)),
+      soilMoisture: clamp(data.soilMoisture - (yearDiff * 0.8)),
+      droughtLevel: (data.drought + (yearDiff * 1.5) > 65) ? 'HIGH' : ((data.drought + (yearDiff * 1.5) > 40) ? 'MEDIUM' : 'LOW') as any,
+      heatLevel: (data.heat + (yearDiff * 2.1) > 70) ? 'HIGH' : ((data.heat + (yearDiff * 2.1) > 50) ? 'MEDIUM' : 'LOW') as any,
+      floodLevel: (data.flood + (yearDiff * 0.8) > 60) ? 'HIGH' : ((data.flood + (yearDiff * 0.8) > 35) ? 'MEDIUM' : 'LOW') as any,
+    };
+  }, [data, year, isLive]);
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-900 selection:bg-green-600 selection:text-white">
@@ -48,20 +70,20 @@ export default function Dashboard() {
             </div>
           )}
 
-          <RiskScoreStrip data={data} hazard={hazard} district={district} onHazardChange={setHazard} />
+          <RiskScoreStrip data={projectedData} hazard={hazard} district={district} onHazardChange={setHazard} />
 
           <div key={validRole} className="animate-fade-slide">
-            {validRole === 'farmer' && <FarmerView data={data} year={year} />}
-            {validRole === 'nabard' && <NabardView data={data} district={district} year={year} />}
-            {validRole === 'insurer' && <InsurerView data={data} />}
-            {validRole === 'supplier' && <SupplierView data={data} district={district} />}
+            {validRole === 'farmer' && <FarmerView data={projectedData} year={year} />}
+            {validRole === 'nabard' && <NabardView data={projectedData} district={district} year={year} />}
+            {validRole === 'insurer' && <InsurerView data={projectedData} />}
+            {validRole === 'supplier' && <SupplierView data={projectedData} district={district} />}
           </div>
 
-          <SharedDataPanels data={data} district={district} hazard={hazard} year={year} isLive={isLive} />
+          <SharedDataPanels data={projectedData} district={district} hazard={hazard} year={year} isLive={isLive} />
           
-          <EcosystemPanel data={data} district={district} />
+          <EcosystemPanel data={projectedData} district={district} />
           
-          <ApiPlayground data={data} district={district} year={year} hazard={hazard} role={validRole} />
+          <ApiPlayground data={projectedData} district={district} year={year} hazard={hazard} role={validRole} />
         </main>
 
         <Footer />

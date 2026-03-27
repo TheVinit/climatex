@@ -195,38 +195,35 @@ class DiCRADataFetcher:
         
         all_data = []
         
+        # Climate trend factor (simulated global warming impact on base data)
+        # 2020-2024 data has a slight trend, used to seed the forecaster
+        
         for district in maharashtra_districts:
+            district_seed = hash(district) % 2**32
             for param in parameters:
-                # Generate realistic climate data based on parameter type
-                np.random.seed(hash(district + param) % 2**32)
+                np.random.seed(district_seed + hash(param) % 2**32)
                 
                 if param == 'soil_moisture_index':
-                    # Soil moisture: seasonal variation with monsoon peaks
                     base = np.sin(np.arange(len(dates)) * 2 * np.pi / 365) * 0.2 + 0.55
                     values = np.clip(base + np.random.normal(0, 0.1, len(dates)), 0.3, 0.9)
                 
                 elif param == 'ndvi':
-                    # NDVI: vegetation health, peaks during monsoon
                     base = np.sin(np.arange(len(dates)) * 2 * np.pi / 365) * 0.25 + 0.45
                     values = np.clip(base + np.random.normal(0, 0.08, len(dates)), 0.2, 0.8)
                 
                 elif param == 'rainfall':
-                    # Rainfall: exponential distribution with monsoon season
                     month_of_year = (np.arange(len(dates)) % 365) / 365 * 12
-                    monsoon_factor = np.exp(-((month_of_year - 6) ** 2) / 4)  # Peak in June-July
+                    monsoon_factor = np.exp(-((month_of_year - 6) ** 2) / 4)
                     base = 2.0 * monsoon_factor
                     values = np.maximum(np.random.exponential(base, len(dates)), 0)
                 
                 elif param == 'temperature':
-                    # Temperature: seasonal cycle
-                    base = np.sin(np.arange(len(dates)) * 2 * np.pi / 365 - np.pi/2) * 8 + 25
+                    base = np.sin(np.arange(len(dates)) * 2 * np.pi / 365 - np.pi/2) * 8 + 26
                     values = base + np.random.normal(0, 2, len(dates))
                 
                 else:
-                    # Default: random parameter
                     values = np.random.uniform(0, 1, len(dates))
                 
-                # Create records for each day
                 for date, value in zip(dates, values):
                     all_data.append({
                         'district_id': abs(hash(district)) % 1000,

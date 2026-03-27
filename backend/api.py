@@ -76,6 +76,7 @@ def forecast_hazards():
     try:
         data = request.json
         district = data.get('district')
+        year = int(data.get('year', 2030))
         date_range = data.get('date_range', 'next_30_days')
         
         # Load model if not already loaded
@@ -101,9 +102,12 @@ def forecast_hazards():
         predictions = forecaster.predict_hazards(latest_features)
         
         # Generate crop advisory based on hazard scores
-        drought_risk = predictions['drought']['risk_score'][0]
-        flood_risk = predictions['flood']['risk_score'][0]
-        heat_risk = predictions['heat_wave']['risk_score'][0]
+        # Apply climate projection logic (synchronized with frontend simulation)
+        year_diff = max(0, year - 2030)
+        
+        drought_risk = np.clip(predictions['drought']['risk_score'][0] + (year_diff * 0.015), 0, 1)
+        flood_risk = np.clip(predictions['flood']['risk_score'][0] + (year_diff * 0.008), 0, 1)
+        heat_risk = np.clip(predictions['heat_wave']['risk_score'][0] + (year_diff * 0.021), 0, 1)
         
         advisory = generate_crop_advisory(drought_risk, flood_risk, heat_risk)
         
@@ -123,6 +127,7 @@ def check_insurance_trigger():
     try:
         data = request.json
         district = data.get('district')
+        year = int(data.get('year', 2030))
         
         if not forecaster.models:
             forecaster.load_model()
@@ -137,8 +142,10 @@ def check_insurance_trigger():
         latest_features = features_df[feature_cols].iloc[-1:].values
         predictions = forecaster.predict_hazards(latest_features)
         
-        drought_risk = predictions['drought']['risk_score'][0]
-        flood_risk = predictions['flood']['risk_score'][0]
+        # Apply projection
+        year_diff = max(0, year - 2030)
+        drought_risk = np.clip(predictions['drought']['risk_score'][0] + (year_diff * 0.015), 0, 1)
+        flood_risk = np.clip(predictions['flood']['risk_score'][0] + (year_diff * 0.008), 0, 1)
         
         trigger = drought_risk > DROUGHT_THRESHOLD or flood_risk > FLOOD_THRESHOLD
         
@@ -158,6 +165,7 @@ def check_credit_risk():
     try:
         data = request.json
         district = data.get('district')
+        year = int(data.get('year', 2030))
         
         if not forecaster.models:
             forecaster.load_model()
@@ -172,9 +180,13 @@ def check_credit_risk():
         latest_features = features_df[feature_cols].iloc[-1:].values
         predictions = forecaster.predict_hazards(latest_features)
         
-        max_risk = max(predictions['drought']['risk_score'][0],
-                      predictions['flood']['risk_score'][0],
-                      predictions['heat_wave']['risk_score'][0])
+        # Apply projection
+        year_diff = max(0, year - 2030)
+        d_p = np.clip(predictions['drought']['risk_score'][0] + (year_diff * 0.015), 0, 1)
+        f_p = np.clip(predictions['flood']['risk_score'][0] + (year_diff * 0.008), 0, 1)
+        h_p = np.clip(predictions['heat_wave']['risk_score'][0] + (year_diff * 0.021), 0, 1)
+        
+        max_risk = max(d_p, f_p, h_p)
         
         risk_level = 'HIGH' if max_risk > 0.7 else 'MEDIUM' if max_risk > 0.5 else 'LOW'
         
