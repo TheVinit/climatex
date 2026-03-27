@@ -22,34 +22,29 @@ A production-ready climate risk intelligence platform for Maharashtra's agricult
 - **Data Sources**: DiCRA, IMD, Sentinel-2, PMFBY claims data
 - **Production Ready**: Error boundaries, loading states, responsive design
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Local Development)
 
-### Prerequisites
-- Node.js 18+
-- Python 3.8+
-- Git
+### 1. Backend (Flask)
+```bash
+cd backend
+py -m pip install -r requirements.txt
+py api.py
+```
+*The API serves forecast data on port 5000.*
 
-### Installation
+### 2. Frontend (Vite + React)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Access the dashboard at http://localhost:5173.*
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/ClimatXAgri.git
-   cd ClimatXAgri
-   ```
+## 📈 Current Project State
+- **UI/UX**: Professional overhaul completed. Role-based entry (Farmer, NABARD, etc.) via `/`.
+- **Analytics**: Year-slider (2030-2040) synchronized across all graphs.
+- **ML Pipeline**: In-progress. Historical NDVI and SMI data processed. API ingestion script prepared (`backend/scripts/ingest_real_data.py`).
 
-2. **Backend Setup**
-   ```bash
-   cd climateX
-   python -m pip install -r requirements.txt
-   python main.py api  # Starts on http://localhost:5000
-   ```
-
-3. **Frontend Setup**
-   ```bash
-   cd agriguard-connect
-   npm install
-   npm run dev  # Starts on http://localhost:8082
-   ```
 
 ## 📁 Project Structure
 
