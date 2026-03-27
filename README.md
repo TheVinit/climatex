@@ -1,226 +1,217 @@
-# KisanSuraksha
+# ClimatXAgri - Climate Hazard Forecasting System
 
-**Climate Hazard Forecasting System for Rural Maharashtra**
+A production-ready climate risk intelligence platform for Maharashtra's agricultural ecosystem, built with modern web technologies and AI/ML models.
 
-## Overview
+## 🌟 Features
 
-KisanSuraksha addresses the absence of district-level, 10–15 year climate hazard forecasting for rural India. Using DiCRA's harmonised geospatial and climate datasets as the primary backbone, augmented with IMD 30-year rainfall grids and Sentinel-2 NDVI satellite data, we train a Random Forest classifier and LSTM time-series model to produce **drought, flood, and heat wave risk scores** for all 36 Maharashtra districts from 2025 to 2040.
+### Multi-Stakeholder Platform
+- **Farmers**: Crop advisory, risk alerts, and planting recommendations
+- **Insurance Companies**: PMFBY trigger automation and claims processing
+- **NABARD**: Dynamic KCC credit limits and risk assessment
+- **Seed Suppliers**: Demand forecasting and supply chain optimization
 
-### Three Decision-Ready Use Cases
+### Advanced Analytics
+- Real-time climate hazard prediction (Drought, Flood, Heat Wave)
+- 15-year risk projections (2025-2040)
+- District-level granularity across 36 Maharashtra districts
+- Interactive maps and data visualizations
 
-1. **Crop Advisory** - Real-time recommendations for farmers based on hazard forecasts
-2. **Automatic PMFBY Insurance Trigger** - Automatic insurance activation when risk exceeds threshold
-3. **NABARD Credit Risk Flag** - District credit risk scoring for Kisan Credit Card lending
+### Technical Excellence
+- **Frontend**: React 18 + TypeScript + Vite + Tailwind CSS + ShadCN UI
+- **Backend**: Python Flask + ML models (Random Forest + LSTM)
+- **Data Sources**: DiCRA, IMD, Sentinel-2, PMFBY claims data
+- **Production Ready**: Error boundaries, loading states, responsive design
 
-## Data Sources
-
-### Primary Backbone
-- **DiCRA (mandatory)** - from `dicra.nabard.org`
-  - Soil moisture index
-  - NDVI crop health indicators
-  - District-level rainfall
-  - Temperature data across 50M+ hectares
-
-### Supporting Datasets
-- **IMD Gridded Rainfall Data** - from `imdpune.gov.in`
-  - 0.25° resolution daily rainfall grids (1901–2024)
-  - 34 years of data across all 36 Maharashtra districts
-  
-- **Sentinel-2 NDVI** - via Google Earth Engine
-  - 10-metre resolution satellite imagery
-  - Crop stress detection 6 weeks before harvest
-  
-- **PMFBY Claims Data** - from `pmfby.gov.in`
-  - District-wise crop insurance claims
-  - Ground truth for model validation
-
-## Model Architecture
-
-- **Random Forest Classifier** - Initial climate hazard prediction
-- **LSTM Time Series** - Temporal pattern recognition for long-term forecasts
-
-### Validation
-Validated against historical drought years: **2012, 2015, 2016, 2018** in Marathwada
-
-## Installation
+## 🚀 Quick Start
 
 ### Prerequisites
+- Node.js 18+
 - Python 3.8+
-- pip
+- Git
 
-### Setup
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/kisansuraksha.git
-   cd kisansuraksha
+   git clone https://github.com/yourusername/ClimatXAgri.git
+   cd ClimatXAgri
    ```
 
-2. **Create virtual environment**
+2. **Backend Setup**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   cd climateX
+   python -m pip install -r requirements.txt
+   python main.py api  # Starts on http://localhost:5000
    ```
 
-3. **Install dependencies**
+3. **Frontend Setup**
    ```bash
-   pip install -r requirements.txt
+   cd agriguard-connect
+   npm install
+   npm run dev  # Starts on http://localhost:8082
    ```
 
-4. **Configure environment**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your DiCRA API key
-   ```
+## 📁 Project Structure
 
-## Usage
+```
+ClimatXAgri/
+├── agriguard-connect/          # React Frontend
+│   ├── src/
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/             # Role-based pages
+│   │   │   ├── RoleSelector.tsx
+│   │   │   ├── FarmerPage.tsx
+│   │   │   ├── InsurerPage.tsx
+│   │   │   ├── NabardPage.tsx
+│   │   │   └── SupplierPage.tsx
+│   │   ├── lib/               # Utilities and types
+│   │   └── hooks/             # Custom React hooks
+│   └── package.json
+├── climateX/                  # Python Backend
+│   ├── api.py                 # Flask REST API
+│   ├── forecaster.py          # ML models
+│   ├── data_fetcher.py        # Data ingestion
+│   └── requirements.txt
+└── README.md
+```
 
-### Command Line
+## 🎯 User Roles & Features
 
-Fetch data from DiCRA:
+### 👨‍🌾 Farmer Dashboard
+- Real-time risk alerts and crop recommendations
+- 15-year climate trend analysis
+- Emergency contacts and market information
+- Localized farming advice
+
+### 🛡️ Insurance Dashboard
+- PMFBY trigger monitoring and automation
+- Claims processing workflow
+- Payout analytics and risk assessment
+- Parametric trigger metrics
+
+### 🏦 NABARD Dashboard
+- Dynamic KCC credit limit adjustments
+- Portfolio risk assessment
+- District-level credit ranking
+- Stress buffer calculations
+
+### 🌱 Supplier Dashboard
+- Seed demand forecasting by crop variety
+- Supply chain optimization
+- Distribution planning
+- Inventory management alerts
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18** - Modern component architecture
+- **TypeScript** - Type safety and developer experience
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first styling
+- **ShadCN UI** - High-quality component library
+- **React Router** - Client-side routing
+- **Recharts** - Data visualization
+- **React Query** - Data fetching and caching
+
+### Backend
+- **Python 3.8+** - Core language
+- **Flask** - REST API framework
+- **Scikit-learn** - Machine learning models
+- **TensorFlow/Keras** - Deep learning (LSTM)
+- **Pandas** - Data processing
+- **NumPy** - Numerical computing
+
+### Data Sources
+- **DiCRA** - District-level climate indicators
+- **IMD** - Rainfall and weather data
+- **Sentinel-2** - Satellite imagery (NDVI)
+- **PMFBY** - Insurance claims data
+
+## 🔧 Development
+
+### Available Scripts
+
 ```bash
-python main.py fetch
+# Frontend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+
+# Backend
+python main.py api   # Start Flask API
+python main.py train # Train ML models
+python main.py fetch # Fetch data from sources
 ```
 
-Train forecasting models:
+### Environment Variables
+
+Create `.env` files in respective directories:
+
+**Backend (.env)**
+```
+DICRA_API_KEY=your_api_key
+API_HOST=0.0.0.0
+API_PORT=5000
+```
+
+**Frontend (.env)**
+```
+VITE_API_URL=http://localhost:5000
+```
+
+## 📊 Data Model
+
+### Core Entities
+- **District**: 36 Maharashtra districts with geospatial data
+- **Hazard**: Drought, Flood, Heat Wave predictions
+- **Risk Level**: HIGH, MEDIUM, LOW classifications
+- **Time Series**: 15-year projections (2025-2040)
+
+### ML Models
+- **Random Forest Classifier**: Initial hazard prediction
+- **LSTM Network**: Temporal pattern recognition
+- **Validation**: Historical accuracy against 2012, 2015, 2016, 2018 droughts
+
+## 🚀 Deployment
+
+### Production Build
 ```bash
-python main.py train
+# Frontend
+npm run build
+
+# Backend (using Gunicorn)
+gunicorn -w 4 -b 0.0.0.0:5000 api:app
 ```
 
-Start the API server:
-```bash
-python main.py api
+### Docker Support
+```dockerfile
+# Add Dockerfile configurations for containerized deployment
 ```
 
-Run complete pipeline:
-```bash
-python main.py full
-```
+## 🤝 Contributing
 
-### REST API
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Start server:
-```bash
-python api.py
-```
+## 📄 License
 
-#### Endpoints
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-**Health Check**
-```
-GET /health
-```
+## 🙏 Acknowledgments
 
-**Fetch Data**
-```
-POST /api/v1/fetch-data
-Content-Type: application/json
+- **DiCRA** for climate data infrastructure
+- **Maharashtra Government** for district-level insights
+- **NABARD** for agricultural finance framework
+- **PMFBY** for insurance scheme data
 
-{
-  "parameters": ["soil_moisture_index", "ndvi", "rainfall", "temperature"],
-  "start_date": "2020-01-01",
-  "end_date": "2024-12-31"
-}
-```
+## 📞 Support
 
-**Train Models**
-```
-POST /api/v1/train
-```
+For questions or support, please open an issue on GitHub or contact the development team.
 
-**Get Hazard Forecast**
-```
-POST /api/v1/forecast
-Content-Type: application/json
+---
 
-{
-  "district": "Aurangabad",
-  "date_range": "next_30_days"
-}
-```
-
-**Check Insurance Trigger**
-```
-POST /api/v1/insurance-trigger
-Content-Type: application/json
-
-{
-  "district": "Marathwada"
-}
-```
-
-**Check Credit Risk**
-```
-POST /api/v1/credit-risk
-Content-Type: application/json
-
-{
-  "district": "Aurangabad"
-}
-```
-
-## Project Structure
-
-```
-kisansuraksha/
-├── main.py              # Entry point
-├── config.py            # Configuration
-├── data_fetcher.py      # DiCRA data fetching
-├── forecaster.py        # ML models (Random Forest, LSTM)
-├── api.py               # Flask API server
-├── requirements.txt     # Python dependencies
-├── .env.example         # Environment template
-├── .gitignore           # Git ignore rules
-├── data/                # Fetched climate data (CSV)
-├── models/              # Trained model files
-└── README.md            # This file
-```
-
-## Model Performance
-
-### F1 Scores
-- **Drought Detection**: 0.78-0.82 (varies by district)
-- **Flood Detection**: 0.75-0.85
-- **Heat Wave Detection**: 0.72-0.80
-
-**Note**: Model limitations and uncertainty are documented. Scores reflect validation on 2012, 2015, 2016, 2018 drought years.
-
-## Team Structure
-
-### Members 1 & 2 — Data Modeller / Technical Lead
-- Build Random Forest and LSTM models
-- Handle DiCRA API integration
-- Manage GitHub repository with documented methodology
-- Document F1 scores, confusion matrices, model limitations
-
-### Member 3 — Climate and Agriculture Domain Expert
-- Understand drought/flood/heat stress impacts on kharif crops
-- District climate history (Marathwada belt focus)
-- Translate technical outputs to crop advisory
-
-### Members 4 & 5 — Business and Policy Expert
-- Dashboard and API development
-- NABARD alignment and presentation
-- Frame outputs for institutional decision-making
-
-## Maharashtra Districts (36)
-
-All major 36 districts covered:
-Ahmednagar, Akola, Amravati, Aurangabad, Beed, Bhandara, Buldhana, Chandrapur, Dhule, Gadchiroli, Gondia, Hingoli, Jalgaon, Jalna, Kolhapur, Latur, Nagpur, Nanded, Nashik, Navi Mumbai, Osmanabd, Parbhani, Pimpri-Chinchwad, Pune, Raigad, Ratnagiri, Sambhajinagar, Sangli, Satara, Sindhudurg, Solapur, Thane, Wardha, Yavatmal
-
-## API Interoperability
-
-Output exposed via REST API compatible with DiCRA infrastructure for:
-- National scaling beyond Maharashtra pilot
-- Integration with NABARD systems
-- Real-time crop advisory dissemination
-
-## License
-
-MIT License - See LICENSE file
-
-## Contact
-
-For questions, issues, or contributions:
-- GitHub Issues: [Project Repository]
-- Email: acceleratorlab.in@undp.org
+**Built with ❤️ for Maharashtra's farming community**

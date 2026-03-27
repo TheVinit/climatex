@@ -16,7 +16,6 @@ nosetests.xml
 coverage.xml
 *.cover
 *.log
-.git
 .mypy_cache
 .pytest_cache
 .hypothesis
@@ -24,3 +23,18 @@ coverage.xml
 dicra_data.csv
 model.pkl
 *.h5
+
+# Node.js
+node_modules/
+dist/
+build/
+.next/
+.expo/
+*.tsbuildinfo
+
+# Git
+.git
+
+# OS
+.DS_Store
+Thumbs.db
