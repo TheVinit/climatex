@@ -42,7 +42,7 @@ MAHARASHTRA_DISTRICTS = [
     "Jalgaon", "Jalna", "Jhalawar",
     "Kolhapur",
     "Latur",
-    "Madhya Pradesh", "Nagpur", "Nanded", "Nashik",
+     "Nagpur", "Nanded", "Nashik",
     "Navi Mumbai", "Nozari",
     "Osmanabd",
     "Parbhani", "Pimpri-Chinchwad", "Pune",

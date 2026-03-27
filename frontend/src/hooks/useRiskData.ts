@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { DistrictData } from '@/lib/types';
-import { DISTRICTS_DATA } from '@/lib/data';
+import { DISTRICT_DATA_MAP } from '@/lib/data';
 import { getForecast, getInsuranceTrigger, getCreditRisk, getForecastHorizon } from '@/lib/api';
 
 interface RiskResult {
@@ -46,7 +46,7 @@ class DataCache {
 const dataCache = new DataCache();
 
 export function useRiskData(district: string): RiskResult {
-  const fallback = DISTRICTS_DATA[district] || DISTRICTS_DATA['Solapur'];
+  const fallback = DISTRICT_DATA_MAP[district] || DISTRICT_DATA_MAP['Solapur'];
   const [data, setData] = useState<DistrictData>(fallback);
   const [isLoading, setIsLoading] = useState(false);
   const [isLive, setIsLive] = useState(false);
