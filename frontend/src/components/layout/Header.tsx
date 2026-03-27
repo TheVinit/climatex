@@ -1,4 +1,3 @@
-import { Leaf, Activity, ShieldCheck, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface HeaderProps {
@@ -6,40 +5,37 @@ interface HeaderProps {
 }
 
 export default function Header({ isLive = true }: HeaderProps) {
+  const chips = ['DiCRA', 'IMD', 'NASA POWER', 'Sentinel-2'];
+
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-xl border-b-2 border-bdr z-50 px-10 flex items-center justify-between shadow-sm">
-      <div className="flex items-center gap-4">
-        <Link to="/" className="flex items-center gap-4 group">
-          <div className="w-10 h-10 rounded-[14px] bg-brand text-white flex items-center justify-center transition-transform group-hover:rotate-3 shadow-lg">
-            <Leaf size={22} strokeWidth={2.5} />
-          </div>
-          <div className="flex flex-col text-left">
-            <span className="font-outfit font-black text-t-primary text-base uppercase tracking-widest leading-none">KISAN<span className="text-brand">SURAKSHA</span></span>
-            <span className="text-t-dim text-[9px] font-mono uppercase tracking-[0.3em] leading-none mt-1.5 font-bold italic">Agriguard Connect</span>
-          </div>
+    <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200 flex items-center px-6 shadow-sm">
+      <div className="flex items-center gap-2 flex-1">
+        <Link to="/" className="flex items-center gap-2 group">
+          <span className="w-2.5 h-2.5 rounded-full bg-green-600 inline-block group-hover:scale-125 transition-transform" />
+          <span className="font-bold text-gray-900 text-base tracking-widest uppercase">KisanSuraksha</span>
+          <span className="text-gray-300 mx-2 font-black italic">/</span>
+          <span className="text-xs text-gray-500 uppercase tracking-widest font-bold">Climate Risk Intelligence</span>
         </Link>
       </div>
 
-      <div className="flex items-center gap-10">
-        <div className="flex items-center gap-3 px-5 py-2.5 bg-bg-panel border border-bdr2 rounded-2xl shadow-inner">
-          <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-brand shadow-[0_0_8px_rgba(76,166,28,0.5)]' : 'bg-t-dim'} animate-pulse`} />
-          <span className={`text-[11px] font-mono uppercase tracking-widest font-black ${isLive ? 'text-brand' : 'text-t-dim'}`}>
-            {isLive ? 'System Linked' : 'Archive Mode'}
-          </span>
+      <div className="flex-1 flex justify-center items-center gap-2 opacity-80">
+        <span className="w-2 h-2 rounded-full bg-green-600 animate-pulse inline-block" />
+        <span className="text-[10px] uppercase tracking-widest text-green-600 font-bold">ACTIVE FORECAST · 2025–2040</span>
+      </div>
+
+      <div className="flex-1 flex justify-end items-center gap-4">
+        <div className="flex items-center gap-2">
+           <span className={`w-2 h-2 rounded-full inline-block ${isLive ? 'bg-green-600' : 'bg-yellow-500'}`} />
+           <span className="text-[10px] uppercase font-bold tracking-widest text-gray-500">{isLive ? 'Model online' : 'Demo mode'}</span>
         </div>
-
-        <div className="h-8 w-px bg-bdr" />
-
-        <div className="flex items-center gap-6 text-t-secondary">
-           <div className="p-2 rounded-xl hover:bg-bg-panel hover:text-brand cursor-pointer transition-all">
-             <Activity size={20} />
-           </div>
-           <div className="p-2 rounded-xl hover:bg-bg-panel hover:text-brand cursor-pointer transition-all">
-             <ShieldCheck size={20} />
-           </div>
-           <div className="w-10 h-10 rounded-2xl bg-bg-panel border border-bdr flex items-center justify-center overflow-hidden hover:border-brand-border transition-all cursor-pointer shadow-sm ml-2">
-             <User size={20} />
-           </div>
+        <div className="flex gap-2 ml-2 hidden lg:flex">
+          {chips.map(c => (
+            <span key={c} className="border border-gray-200 bg-gray-50 rounded-full px-3 py-1 text-[9px] uppercase tracking-widest font-bold text-gray-500 shadow-sm whitespace-nowrap">{c}</span>
+          ))}
+          <div className="w-px h-6 bg-gray-200 mx-2 self-center" />
+          <Link to="/" className="border border-gray-200 bg-white hover:border-green-300 hover:text-green-600 transition-colors rounded-full px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold text-gray-600 shadow-sm flex items-center whitespace-nowrap">
+            Switch Role
+          </Link>
         </div>
       </div>
     </header>

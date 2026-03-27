@@ -1,6 +1,5 @@
 import { Droplets, Waves, Thermometer } from 'lucide-react';
 import { DistrictData, Hazard, RiskLevel } from '@/lib/types';
-import { getRiskColor, getRiskBg, getRiskBorder } from '@/lib/data';
 import { useCountAnimation } from '@/hooks/useCountAnimation';
 import { cn } from '@/lib/utils';
 
@@ -11,53 +10,97 @@ interface RiskScoreStripProps {
   onHazardChange: (h: Hazard) => void;
 }
 
+function getLevelColors(level: RiskLevel, isActive: boolean) {
+  if (isActive) {
+    return {
+      text: 'text-green-600',
+      bg: 'bg-green-600',
+      border: 'border-green-600',
+      ring: 'ring-2 ring-green-600 shadow-md',
+      tagText: 'text-green-700',
+      tagBg: 'bg-green-50',
+      tagBorder: 'border-green-200'
+    };
+  }
+  
+  if (level === 'HIGH') {
+    return {
+      text: 'text-red-500',
+      bg: 'bg-red-500',
+      border: 'border-red-500',
+      ring: 'hover:border-red-300 border-gray-200 shadow-sm',
+      tagText: 'text-red-700',
+      tagBg: 'bg-red-50',
+      tagBorder: 'border-red-200'
+    };
+  }
+  if (level === 'MEDIUM') {
+    return {
+      text: 'text-yellow-500',
+      bg: 'bg-yellow-500',
+      border: 'border-yellow-500',
+      ring: 'hover:border-yellow-300 border-gray-200 shadow-sm',
+      tagText: 'text-yellow-700',
+      tagBg: 'bg-yellow-50',
+      tagBorder: 'border-yellow-200'
+    };
+  }
+  return {
+    text: 'text-green-500',
+    bg: 'bg-green-500',
+    border: 'border-green-500',
+    ring: 'hover:border-green-300 border-gray-200 shadow-sm',
+    tagText: 'text-green-700',
+    tagBg: 'bg-green-50',
+    tagBorder: 'border-green-200'
+  };
+}
+
 function RiskCard({ label, icon: Icon, pct, level, isActive, onClick, district }: {
   label: string; icon: typeof Droplets; pct: number; level: RiskLevel; isActive: boolean; onClick: () => void; district: string;
 }) {
-  const color = getRiskColor(level);
+  const colors = getLevelColors(level, isActive);
   const animatedValue = useCountAnimation(pct, 1200);
 
   return (
     <div
       onClick={onClick}
       className={cn(
-        "bg-bg-surface border rounded-[20px] p-6 relative overflow-hidden cursor-pointer transition-all duration-500",
-        isActive ? 'ring-2 ring-brand scale-[1.01] shadow-xl' : 'hover:bg-bg-hover hover:border-bdr2 border-bdr shadow-sm'
+        "bg-white rounded-xl p-6 relative overflow-hidden cursor-pointer transition-all duration-300",
+        colors.ring
       )}
-      style={{ borderColor: isActive ? 'var(--brand)' : getRiskBorder(level) }}
     >
-      <div className="absolute w-24 h-24 -top-8 -right-8 rounded-full pointer-events-none opacity-[0.05]" style={{ background: color }} />
+      <div className={cn("absolute w-32 h-32 -top-12 -right-12 rounded-full pointer-events-none opacity-[0.03] transition-colors", colors.bg)} />
 
       <div className="flex items-center gap-2 mb-4">
-        <Icon size={14} style={{ color: isActive ? 'var(--brand)' : color }} />
-        <span className="font-mono text-[9px] tracking-[0.2em] text-t-dim uppercase leading-none">{label} Surveillance</span>
+        <Icon size={16} className={colors.text} />
+        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">{label} Surveillance</span>
       </div>
 
-      <div key={district + label} className="flex items-baseline gap-1">
-        <span className={cn("font-display italic transition-all duration-500", isActive ? 'text-7xl text-brand' : 'text-6xl text-t-primary')} style={{ color: isActive ? '' : color }}>
+      <div key={district + label} className="flex items-baseline gap-1 mt-2 mb-2">
+        <span className={cn("text-5xl font-bold transition-all duration-500", colors.text)}>
           {animatedValue}%
         </span>
       </div>
 
       <div className="flex items-center justify-between mt-6">
         <span
-          className="inline-block text-[9px] font-mono px-3 py-1 rounded-full border uppercase tracking-widest font-bold"
-          style={{ color: isActive ? 'var(--brand)' : color, backgroundColor: getRiskBg(level), borderColor: isActive ? 'rgba(76,166,28,0.2)' : getRiskBorder(level) }}
+          className={cn("px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest border transition-colors", colors.tagBg, colors.tagText, colors.tagBorder)}
         >
           {level} RISK
         </span>
         
         {isActive && (
            <div className="flex gap-1.5">
-              {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />)}
+              {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />)}
            </div>
         )}
       </div>
 
-      <div className="h-1 bg-bg-panel rounded-full mt-5 overflow-hidden">
+      <div className="h-1.5 bg-gray-100 rounded-full mt-5 overflow-hidden">
         <div 
-           className="h-full rounded-full transition-all duration-1000 ease-out" 
-           style={{ width: `${pct}%`, backgroundColor: isActive ? 'var(--brand)' : color }} 
+           className={cn("h-full rounded-full transition-all duration-1000 ease-out", colors.bg)} 
+           style={{ width: `${pct}%` }} 
         />
       </div>
     </div>

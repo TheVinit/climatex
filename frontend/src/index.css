@@ -3,71 +3,33 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 120 15% 98%;
-    --foreground: 120 20% 5%;
-    --card: 0 0% 100%;
-    --card-foreground: 120 20% 5%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 120 20% 5%;
-    --primary: 96 70% 38%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 120 10% 93%;
-    --secondary-foreground: 120 20% 5%;
-    --muted: 120 10% 93%;
-    --muted-foreground: 120 5% 45%;
-    --accent: 120 10% 93%;
-    --accent-foreground: 120 20% 5%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 120 5% 90%;
-    --input: 120 5% 90%;
-    --ring: 96 70% 38%;
-    --radius: 0.75rem;
-  }
-
-  /* No separate .dark needed as per user request for light mode focus */
-}
-
-@layer base {
-  * {
-    @apply border-bdr;
-  }
   body {
-    @apply bg-bg-base text-t-primary selection:bg-brand selection:text-white;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-gray-50 text-gray-900 selection:bg-green-600 selection:text-white;
   }
 }
 
-/* Custom design system utilities */
-@layer components {
-  .panel-glass {
-    @apply bg-bg-surface border border-bdr rounded-[24px] p-6 shadow-sm;
-  }
-  
-  .glass-glow {
-    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.03), 0 0 1px 0 rgba(0, 0, 0, 0.05);
-  }
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-bdr2 rounded-full hover:bg-t-dim/20 transition-colors;
-}
-
-/* Animations */
+/* Base Animations & Utilities */
 @keyframes fade-slide {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-slide {
-  animation: fade-slide 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
+  animation: fade-slide 0.5s ease-out forwards;
+}
+
+/* Clean Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }

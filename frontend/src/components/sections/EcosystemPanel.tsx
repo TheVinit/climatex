@@ -16,17 +16,17 @@ const nodePositions = [
 ];
 
 const nodeEndpoints = [
-  { x: 200, y: 35 },
-  { x: 365, y: 160 },
-  { x: 200, y: 285 },
-  { x: 35, y: 160 },
+  { x: 200, y: 40 },
+  { x: 360, y: 160 },
+  { x: 200, y: 280 },
+  { x: 40, y: 160 },
 ];
 
 export default function EcosystemPanel({ data, district }: EcosystemPanelProps) {
-  const riskColor = getRiskColor(data.droughtLevel);
+  const riskColor = data.droughtLevel === 'HIGH' ? '#ef4444' : data.droughtLevel === 'MEDIUM' ? '#f59e0b' : '#10b981';
 
   const nodes = [
-    { role: 'Farmer', icon: Sprout, color: '#4da11c', status: data.droughtLevel === 'HIGH' ? `Plan: ${data.primaryCrop}` : 'Monitor Planting' },
+    { role: 'Farmer', icon: Sprout, color: '#16a34a', status: data.droughtLevel === 'HIGH' ? `Plan: ${data.primaryCrop}` : 'Monitor Planting' },
     { role: 'NABARD', icon: Building2, color: '#3b82f6', status: `KCC FLAG: ${data.kccRisk}` },
     { role: 'Insurer', icon: Shield, color: '#f59e0b', status: data.insuranceTrigger === 'ARMED' ? 'Trigger Armed' : 'System Calm' },
     { role: 'Supplier', icon: Leaf, color: '#8b5cf6', status: `Pre-Stocking ${data.primaryCrop.split('/')[0].trim()}` },
@@ -40,38 +40,38 @@ export default function EcosystemPanel({ data, district }: EcosystemPanelProps) 
   ];
 
   return (
-    <div className="bg-white border-2 border-bdr rounded-[32px] p-10 shadow-xl relative overflow-hidden animate-fade-slide text-left">
-      <div className="flex items-center gap-4 mb-12 leading-none">
-          <div className="p-3 rounded-2xl bg-bg-panel text-brand border border-bdr shadow-sm">
+    <div className="bg-white rounded-xl p-8 border border-gray-200 shadow-sm relative overflow-hidden animate-fade-slide text-left">
+      <div className="flex items-center gap-3 mb-10 leading-none">
+          <div className="p-2 rounded-lg bg-green-50 text-green-600 border border-green-100 shadow-sm">
              <Activity size={20} />
           </div>
           <div className="text-left">
-             <span className="font-outfit font-black text-t-primary text-sm uppercase tracking-[0.2em] leading-none">Institutional Coordination Layer</span>
-             <p className="text-[11px] font-mono text-t-dim uppercase tracking-[0.25em] mt-2 italic font-black">Real-time synchronized risk distribution matrix</p>
+             <span className="font-bold text-gray-900 text-sm uppercase tracking-widest leading-none">Institutional Coordination Layer</span>
+             <p className="text-xs text-gray-500 uppercase tracking-widest mt-1.5 font-semibold">Real-time synchronized risk distribution matrix</p>
           </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 grid-cols-1 gap-16 items-center">
+      <div className="grid lg:grid-cols-2 grid-cols-1 gap-12 items-center">
         {/* Parametric Flow Visualizer */}
-        <div className="relative h-[380px] mx-auto w-full max-w-[480px] flex items-center justify-center">
-           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #000 1px, transparent 0)', backgroundSize: '48px 48px' }} />
+        <div className="relative h-[360px] mx-auto w-full max-w-[440px] flex items-center justify-center">
+           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #9ca3af 1px, transparent 0)', backgroundSize: '32px 32px' }} />
 
-           <div className="relative w-40 h-40 rounded-full flex flex-col items-center justify-center text-center z-20 p-6 animate-in zoom-in duration-1000 shadow-2xl bg-white border-2 hover:scale-105 transition-transform"
+           <div className="relative w-36 h-36 rounded-full flex flex-col items-center justify-center text-center z-20 p-4 shadow-lg bg-white border border-gray-100 transition-transform"
              style={{ borderColor: riskColor }}>
-             <span className="font-mono text-[10px] text-brand tracking-[0.4em] uppercase mb-1 font-black leading-none">DATA CORE</span>
-             <span className="font-display italic text-2xl text-t-primary leading-none uppercase font-black tracking-tighter mt-1">{district}</span>
-             <div className="h-0.5 w-10 bg-brand/30 my-3 rounded-full" />
-             <span className="font-mono text-[10px] font-black uppercase tracking-widest" style={{ color: riskColor }}>RISK: {data.drought}%</span>
+             <span className="text-[10px] text-green-600 tracking-widest uppercase mb-1 font-bold">DATA CORE</span>
+             <span className="text-xl text-gray-900 font-bold uppercase tracking-wide mt-1">{district}</span>
+             <div className="h-0.5 w-10 bg-gray-200 my-2 rounded-full" />
+             <span className="text-xs font-bold uppercase tracking-widest" style={{ color: riskColor }}>RISK: {data.drought}%</span>
            </div>
 
-           <div className="absolute w-44 h-44 border-2 border-brand/10 rounded-full animate-spin-slow" />
-           <div className="absolute w-56 h-56 border-2 border-dashed border-brand/5 rounded-full animate-spin-reverse-slow" />
+           <div className="absolute w-40 h-40 border border-gray-200 rounded-full animate-spin-slow" />
+           <div className="absolute w-52 h-52 border border-dashed border-gray-200 rounded-full animate-spin-reverse-slow" />
 
            <svg className="absolute inset-0 pointer-events-none overflow-visible" viewBox="0 0 400 320">
              {nodeEndpoints.map((ep, i) => (
                <g key={i}>
                  <line x1="200" y1="160" x2={ep.x} y2={ep.y}
-                   stroke={riskColor} strokeWidth="2" strokeDasharray="10 6" opacity="0.25"
+                   stroke={riskColor} strokeWidth="2" strokeDasharray="6 4" opacity="0.3"
                    className="animate-pulse" />
                  <circle r="4" fill={riskColor} className="animate-ping" style={{ transformOrigin: 'center' }}>
                    <animateMotion dur={`${3 + i * 0.5}s`} repeatCount="indefinite" begin={`${i * 0.4}s`}>
@@ -86,50 +86,50 @@ export default function EcosystemPanel({ data, district }: EcosystemPanelProps) 
            {nodes.map((node, i) => {
              const Icon = node.icon;
              return (
-               <div key={node.role} className="absolute bg-white border-2 border-bdr rounded-[20px] p-4 text-center z-10 w-[150px] shadow-xl transition-all hover:border-brand-border hover:translate-y-[-2px] group cursor-default"
+               <div key={node.role} className="absolute bg-white border border-gray-200 rounded-xl p-3 text-center z-10 w-[130px] shadow-sm transition-all hover:border-green-300 hover:shadow-md group cursor-default"
                  style={{ ...nodePositions[i] } as React.CSSProperties}>
-                 <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full shadow-[0_0_8px_rgba(76,166,28,0.5)]" style={{ backgroundColor: riskColor }} />
-                 <Icon size={20} style={{ color: node.color }} className="mx-auto mb-2 transition-transform group-hover:scale-110" />
-                 <div className="font-display italic text-base text-t-primary leading-none font-black uppercase tracking-tighter">{node.role}</div>
-                 <div className="text-[9px] font-mono mt-2 leading-tight uppercase tracking-[0.2em] text-t-dim transition-colors group-hover:text-t-primary font-black italic">{node.status}</div>
+                 <div className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ backgroundColor: riskColor }} />
+                 <Icon size={18} style={{ color: node.color }} className="mx-auto mb-2 transition-transform group-hover:scale-110" />
+                 <div className="text-sm text-gray-900 font-bold uppercase tracking-wide">{node.role}</div>
+                 <div className="text-[10px] mt-1 uppercase tracking-wider text-gray-500 font-semibold">{node.status}</div>
                </div>
              );
            })}
         </div>
 
         {/* Impact Matrix */}
-        <div className="flex flex-col gap-8">
-           <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6">
+           <div className="grid grid-cols-2 gap-4">
               {beforeAfter.map(item => (
-                <div key={item.role} className="p-6 rounded-[2rem] bg-bg-panel/40 border-2 border-bdr hover:border-brand-border hover:bg-white transition-all flex flex-col gap-5 shadow-sm group">
-                   <div className="flex items-center gap-4 text-left">
-                      <div className="p-2.5 rounded-xl bg-white border border-bdr shadow-sm group-hover:text-brand transition-colors">
-                         <item.icon size={16} className="text-t-secondary" />
+                <div key={item.role} className="p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-300 hover:bg-white transition-all flex flex-col gap-4 shadow-sm group">
+                   <div className="flex items-center gap-3 text-left">
+                      <div className="p-1.5 rounded-lg bg-white border border-gray-200 shadow-sm">
+                         <item.icon size={14} className="text-gray-500" />
                       </div>
-                      <span className="font-outfit font-black text-t-primary text-xs uppercase tracking-[0.2em] leading-none group-hover:text-brand transition-colors">{item.role} Grid</span>
+                      <span className="font-bold text-gray-900 text-xs uppercase tracking-wider leading-none">{item.role} Grid</span>
                    </div>
                    
-                   <div className="space-y-3.5">
-                      <div className="flex items-center gap-3">
-                         <div className="w-2 h-2 rounded-full bg-risk-h/40" />
-                         <span className="text-[10px] text-t-dim line-through italic uppercase tracking-[0.2em] font-bold">{item.before}</span>
+                   <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                         <div className="w-1.5 h-1.5 rounded-full bg-red-400 opacity-60" />
+                         <span className="text-[10px] text-gray-500 line-through uppercase tracking-widest font-semibold">{item.before}</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                         <ArrowRight size={12} className="text-brand shrink-0" />
-                         <span className="text-[11px] text-t-primary font-black uppercase tracking-[0.2em] leading-tight">{item.after}</span>
+                      <div className="flex items-center gap-2">
+                         <ArrowRight size={10} className="text-green-600 shrink-0" />
+                         <span className="text-xs text-gray-900 font-bold uppercase tracking-wider leading-tight">{item.after}</span>
                       </div>
                    </div>
                 </div>
               ))}
            </div>
            
-           <div className="p-6 rounded-[2rem] bg-brand/5 border-2 border-brand/20 flex items-center justify-between shadow-inner">
-              <div className="flex items-center gap-4 text-left">
-                 <Shield size={20} className="text-brand" />
-                 <p className="text-[11px] font-mono text-t-secondary uppercase tracking-[0.25em] leading-none font-black italic">Sync Status: SECURE SYSTEMIC OVERHAUL V4</p>
+           <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-center justify-between shadow-sm mt-2">
+              <div className="flex items-center gap-3 text-left">
+                 <Shield size={18} className="text-green-600" />
+                 <p className="text-[10px] text-green-700 uppercase tracking-widest leading-none font-bold">Sync Status: SECURE SYSTEMIC OVERHAUL V4</p>
               </div>
-              <div className="flex gap-1.5 pr-2">
-                 {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 bg-brand rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />)}
+              <div className="flex gap-1 pr-1">
+                 {[1,2,3].map(i => <div key={i} className="w-1.5 h-1.5 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />)}
               </div>
            </div>
         </div>

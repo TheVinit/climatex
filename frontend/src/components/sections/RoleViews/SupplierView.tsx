@@ -8,7 +8,7 @@ interface Props {
 }
 
 const seedColors: Record<string, string> = {
-  bajra: 'var(--brand)', jowar: '#5ab87a', cotton: '#f59e0b', turDal: '#3b82f6', chickpea: '#10b981',
+  bajra: '#10b981', jowar: '#34d399', cotton: '#f59e0b', turDal: '#3b82f6', chickpea: '#8b5cf6',
 };
 const seedNames: Record<string, string> = {
   bajra: 'BAJRA SEED', jowar: 'JOWAR SEED', cotton: 'COTTON SEED', turDal: 'TUR DAL SEED', chickpea: 'CHICKPEA SEED',
@@ -29,45 +29,46 @@ export default function SupplierView({ data, district }: Props) {
   const zone = getZone(district);
 
   return (
-    <div className="grid lg:grid-cols-2 grid-cols-1 gap-8 animate-fade-slide">
+    <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 animate-fade-slide">
       {/* Demand Forecaster Hub */}
-      <div className="bg-white border-2 border-bdr rounded-[32px] p-10 shadow-xl overflow-hidden relative flex flex-col text-left">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="p-3 rounded-2xl bg-bg-panel text-brand border border-bdr shadow-sm">
-            <BarChart3 size={20} />
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col gap-6">
+        
+        {/* Target UI Hero Replacement */}
+        <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-xl p-8 text-white relative overflow-hidden">
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold mb-2">Demand Trace: {district}</h1>
+              <p className="text-amber-100 mb-4">Satellite Correlated Logistics Node</p>
+            </div>
+            <BarChart3 size={80} className="text-amber-200 opacity-80" />
           </div>
-          <span className="font-outfit font-black text-t-primary text-sm uppercase tracking-[0.2em] leading-none">Logistics Forecasting Engine</span>
         </div>
 
-        <div className="relative mb-10">
-           <span className="font-mono text-[11px] text-t-dim uppercase tracking-[0.3em] font-black">INPUT_DEMAND_PROJECTION</span>
-           <div className="font-display italic text-4xl text-brand mt-3 uppercase tracking-tight font-black">Demand Trace: {district}</div>
-           <p className="text-[11px] font-mono text-t-secondary mt-3 uppercase tracking-[0.25em] leading-none font-black italic">Satellite Correlated - Node V4.2.1 Alpha</p>
-        </div>
+        <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider block -mb-4 pt-2">Input Demand Projection</span>
 
-        <div className="flex-1 space-y-5 pr-2 -mx-2">
+        <div className="flex-1 space-y-4">
           {seeds.map(([key, val]) => (
-            <div key={key} className="flex flex-col gap-4 p-6 bg-white border-2 border-bdr rounded-2xl group transition-all hover:border-brand-border shadow-sm">
-              <div className="flex justify-between items-center leading-none text-left">
-                <span className="text-[11px] font-mono text-t-primary font-black tracking-[0.2em] group-hover:text-brand transition-colors uppercase">{seedNames[key]}</span>
-                <span className="font-mono text-xs text-t-dim font-black italic">{val.toLocaleString()} KG PROJECTION</span>
+            <div key={key} className="flex flex-col gap-3 p-4 bg-gray-50 border border-gray-100 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-amber-200 group">
+              <div className="flex justify-between items-center text-left">
+                <span className="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition-colors uppercase">{seedNames[key]}</span>
+                <span className="text-xs font-semibold text-gray-500">{val.toLocaleString()} KG</span>
               </div>
-              <div className="flex items-center gap-4">
-                 <div className="flex-1 h-3 bg-bg-panel rounded-full overflow-hidden border border-bdr shadow-inner">
-                    <div className="h-full rounded-full transition-all duration-1000 ease-out shadow-lg" style={{ width: `${(val / maxVal) * 100}%`, backgroundColor: seedColors[key] }} />
+              <div className="flex items-center gap-3">
+                 <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-1000 ease-out" style={{ width: `${(val / maxVal) * 100}%`, backgroundColor: seedColors[key] }} />
                  </div>
-                 <div className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ backgroundColor: seedColors[key] }} />
+                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: seedColors[key] }} />
               </div>
             </div>
           ))}
         </div>
 
         {data.drought > 60 && (
-          <div className="bg-risk-hbg border-2 border-risk-hb rounded-[2rem] p-8 mt-10 flex items-start gap-5 shadow-lg">
-            <AlertTriangle size={24} className="text-risk-h mt-1 shrink-0 animate-pulse" />
-            <div className="flex flex-col gap-2">
-               <span className="font-black text-risk-h text-sm uppercase tracking-[0.25em] leading-none">SUPPLY_CHAIN_ALERT</span>
-               <p className="text-xs text-risk-h/80 italic font-bold leading-relaxed opacity-90">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-5 mt-4 flex items-start gap-4 shadow-sm">
+            <AlertTriangle size={20} className="text-red-600 mt-0.5 shrink-0" />
+            <div className="flex flex-col gap-1">
+               <span className="font-bold text-red-700 text-sm uppercase tracking-wider">Supply Chain Alert</span>
+               <p className="text-sm text-red-800 font-medium">
                  Critical drought node: Scale down water-intensive input dispatches. Target -{Math.round(data.drought * 0.6)}% adjustment on high-water seeds.
                </p>
             </div>
@@ -76,72 +77,72 @@ export default function SupplierView({ data, district }: Props) {
       </div>
 
       {/* Strategic Deployment Map Hub */}
-      <div className="bg-white border-2 border-bdr rounded-[32px] p-10 shadow-xl overflow-hidden relative flex flex-col text-left">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="p-3 rounded-2xl bg-bg-panel text-brand border border-bdr shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col gap-6">
+        <div className="flex items-center gap-3 mb-2 pt-2">
+          <div className="p-2 rounded-lg bg-amber-50 text-amber-600 border border-amber-100">
             <Truck size={20} />
           </div>
-          <span className="font-outfit font-black text-t-primary text-sm uppercase tracking-[0.2em] leading-none">Strategic Deployment HUB</span>
+          <span className="text-lg font-semibold text-gray-900">Strategic Deployment Hub</span>
         </div>
 
-        <div className="bg-bg-panel/40 rounded-[2.5rem] p-6 border-2 border-bdr shadow-inner mb-10">
-           <svg width="100%" height="280" viewBox="0 0 400 240" className="mt-4 filter drop-shadow-xl">
+        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm">
+           <svg width="100%" height="240" viewBox="0 0 400 240" className="mt-2 filter drop-shadow-sm">
              <g className="group/node cursor-pointer">
-                <rect x="20" y="10" width="360" height="65" rx="16" fill="rgba(46,125,50,0.06)" className="stroke-2 stroke-[#e2e8e2] group-hover:stroke-brand transition-all" />
-                <text x="200" y="34" textAnchor="middle" fill="var(--brand)" fontSize="11" className="font-mono uppercase font-black tracking-[0.25em]">COASTAL-WESTERN MATRIX</text>
-                <text x="200" y="52" textAnchor="middle" fill="var(--t-dim)" fontSize="9" className="font-mono uppercase tracking-[0.2em] font-bold italic">Stable / Standard Lead-Times</text>
+                <rect x="20" y="10" width="360" height="65" rx="12" fill="#ecfdf5" className="stroke-2 stroke-gray-200 group-hover:stroke-green-400 transition-all opacity-80" />
+                <text x="200" y="34" textAnchor="middle" fill="#10b981" fontSize="11" className="uppercase font-bold tracking-widest">COASTAL-WESTERN MATRIX</text>
+                <text x="200" y="52" textAnchor="middle" fill="#6b7280" fontSize="9" className="uppercase tracking-wider font-semibold">Stable / Standard Lead-Times</text>
              </g>
 
              <g className="group/node cursor-pointer">
-                <rect x="20" y="85" width="360" height="65" rx="16" fill="rgba(249,168,37,0.06)" className="stroke-2 stroke-[#e2e8e2] group-hover:stroke-risk-m transition-all" />
-                <text x="200" y="109" textAnchor="middle" fill="var(--risk-m)" fontSize="11" className="font-mono uppercase font-black tracking-[0.25em]">CENTRAL-NEXUS NODE</text>
-                <text x="200" y="127" textAnchor="middle" fill="var(--t-dim)" fontSize="9" className="font-mono uppercase tracking-[0.2em] font-bold italic">Elevated Demand Trace Verified</text>
+                <rect x="20" y="85" width="360" height="65" rx="12" fill="#fffbeb" className="stroke-2 stroke-gray-200 group-hover:stroke-amber-400 transition-all opacity-80" />
+                <text x="200" y="109" textAnchor="middle" fill="#f59e0b" fontSize="11" className="uppercase font-bold tracking-widest">CENTRAL-NEXUS NODE</text>
+                <text x="200" y="127" textAnchor="middle" fill="#6b7280" fontSize="9" className="uppercase tracking-wider font-semibold">Elevated Demand Trace Verified</text>
              </g>
 
              <g className="group/node cursor-pointer">
-                <rect x="20" y="160" width="360" height="70" rx="16" fill="rgba(211,47,47,0.06)" className="stroke-2 stroke-[#e2e8e2] group-hover:stroke-risk-h transition-all" />
-                <text x="200" y="186" textAnchor="middle" fill="var(--risk-h)" fontSize="11" className="font-mono uppercase font-black tracking-[0.25em]">MARATHWADA-VIDARBHA CORE</text>
-                <text x="200" y="204" textAnchor="middle" fill="var(--t-dim)" fontSize="9" className="font-mono uppercase tracking-[0.2em] font-bold italic">Critical / Pre-Deployment Active</text>
+                <rect x="20" y="160" width="360" height="70" rx="12" fill="#fef2f2" className="stroke-2 stroke-gray-200 group-hover:stroke-red-400 transition-all opacity-80" />
+                <text x="200" y="186" textAnchor="middle" fill="#ef4444" fontSize="11" className="uppercase font-bold tracking-widest">MARATHWADA-VIDARBHA CORE</text>
+                <text x="200" y="204" textAnchor="middle" fill="#6b7280" fontSize="9" className="uppercase tracking-wider font-semibold">Critical / Pre-Deployment Active</text>
              </g>
 
              <g transform={`translate(200, ${zone === 0 ? 35 : zone === 1 ? 110 : 185})`} className="animate-in fade-in duration-1000">
-                <circle r="8" fill={zone === 0 ? 'var(--brand)' : zone === 1 ? 'var(--risk-m)' : 'var(--risk-h)'} className="shadow-2xl" />
-                <circle r="14" fill="none" stroke={zone === 0 ? 'var(--brand)' : zone === 1 ? 'var(--risk-m)' : 'var(--risk-h)'} strokeWidth="2" opacity="0.4" className="animate-ping" />
-                <text y="-30" textAnchor="middle" fill="var(--brand)" fontSize="9" className="font-mono font-black uppercase tracking-[0.3em] italic">{district.toUpperCase()} NODE</text>
+                <circle r="8" fill={zone === 0 ? '#10b981' : zone === 1 ? '#f59e0b' : '#ef4444'} className="drop-shadow-md" />
+                <circle r="14" fill="none" stroke={zone === 0 ? '#10b981' : zone === 1 ? '#f59e0b' : '#ef4444'} strokeWidth="2" opacity="0.4" className="animate-ping" />
+                <text y="-25" textAnchor="middle" fill={zone === 0 ? '#059669' : zone === 1 ? '#d97706' : '#b91c1c'} fontSize="10" className="font-bold uppercase tracking-widest">{district.toUpperCase()} NODE</text>
              </g>
            </svg>
         </div>
 
-        <div className="space-y-5 px-2">
-          <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border-2 border-bdr group hover:bg-bg-panel hover:border-brand transition-all shadow-sm">
-            <CheckCircle size={20} className="text-brand shrink-0 mt-1" />
-            <div className="flex flex-col gap-1.5">
-               <span className="text-[11px] font-mono text-t-primary font-black uppercase tracking-[0.2em] leading-none group-hover:text-brand">Command: INVENTORY SHIFT</span>
-               <span className="text-[11px] text-t-dim font-bold uppercase leading-relaxed tracking-tight group-hover:text-t-primary">Stock 40% more drought-tolerant varieties at {district} regional depot.</span>
+        <div className="space-y-3 mt-4">
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-white border border-gray-200 hover:border-amber-300 hover:shadow-sm transition-all">
+            <CheckCircle size={20} className="text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1">
+               <span className="text-xs text-gray-900 font-bold uppercase tracking-wider">Command: INVENTORY SHIFT</span>
+               <span className="text-sm text-gray-600 font-medium">Stock 40% more drought-tolerant varieties at {district} regional depot.</span>
             </div>
           </div>
-          <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border-2 border-bdr group hover:bg-bg-panel hover:border-brand transition-all shadow-sm">
-            <CheckCircle size={20} className="text-brand shrink-0 mt-1" />
-            <div className="flex flex-col gap-1.5">
-               <span className="text-[11px] font-mono text-t-primary font-black uppercase tracking-[0.2em] leading-none group-hover:text-brand">Command: LOGISTICS STRATEGY</span>
-               <span className="text-[11px] text-t-dim font-bold uppercase leading-relaxed tracking-tight group-hover:text-t-primary">Reduce water-intensive input supply in {district} by {data.kccReduction}% to prevent waste.</span>
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-white border border-gray-200 hover:border-amber-300 hover:shadow-sm transition-all">
+            <CheckCircle size={20} className="text-green-500 shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1">
+               <span className="text-xs text-gray-900 font-bold uppercase tracking-wider">Command: LOGISTICS STRATEGY</span>
+               <span className="text-sm text-gray-600 font-medium">Reduce water-intensive input supply in {district} by {data.kccReduction}% to prevent waste.</span>
             </div>
           </div>
-          <div className="flex items-start gap-4 p-6 rounded-2xl bg-bg-panel border-2 border-bdr opacity-40 grayscale group hover:grayscale-0 transition-all">
-            <Circle size={20} className="text-t-dim shrink-0 mt-1" />
-            <div className="flex flex-col gap-1.5">
-               <span className="text-[11px] font-mono text-t-dim uppercase tracking-[0.2em] leading-none font-black italic">PENDING: FEDERATED STORAGE SYNC</span>
-               <span className="text-[11px] text-t-dim italic uppercase leading-relaxed tracking-tight font-bold">Awaiting regional warehouse satellite telemetry link.</span>
+          <div className="flex items-start gap-4 p-5 rounded-xl bg-gray-50 border border-gray-100 opacity-60">
+            <Circle size={20} className="text-gray-400 shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1">
+               <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">PENDING: FEDERATED STORAGE SYNC</span>
+               <span className="text-sm text-gray-500 font-medium">Awaiting regional warehouse satellite telemetry link.</span>
             </div>
           </div>
         </div>
         
-        <div className="mt-auto pt-10 border-t-2 border-bdr flex items-center justify-between opacity-60">
-           <div className="flex items-center gap-3">
-              <Box size={18} className="text-t-dim" />
-              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-t-dim font-black italic">Logistics Grid: SECURE</span>
+        <div className="mb-0 mt-auto pt-6 border-t border-gray-100 flex items-center justify-between">
+           <div className="flex items-center gap-2">
+              <Box size={16} className="text-gray-400" />
+              <span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Logistics Grid: SECURE</span>
            </div>
-           <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-t-dim font-black italic opacity-50">Last Update: 228ms Sync</span>
+           <span className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Last Update: 228ms Sync</span>
         </div>
       </div>
     </div>
